@@ -69,6 +69,24 @@ export const RegisterScreen = () => {
           </Layout>
         </Card>
       </Layout>
+
+      <Text style={styles.or}>OR</Text>
+      <Button
+        appearance="outline"
+        accessoryLeft={props => (
+          <Icon
+            {...props}
+            name="logo-google"
+            size={22}
+            color={theme['color-primary-600']}
+            style={{
+              margin: 'auto',
+            }}
+          />
+        )}
+      >
+        <Text>SIGN IN WITH GOOGLE</Text>
+      </Button>
     </Layout>
   );
 };
@@ -82,7 +100,6 @@ const styles = StyleSheet.create({
   },
   header: {
     padding: 10,
-
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -100,5 +117,15 @@ const styles = StyleSheet.create({
   },
   registerCta: {
     margin: 10,
+  },
+  or: {
+    fontSize: 18,
+    fontWeight: 700,
+    color: '#8f9bb3',
+    marginVertical: 10,
+  },
+  googleLoginCta: {
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });
