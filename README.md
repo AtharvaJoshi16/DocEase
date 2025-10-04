@@ -1,97 +1,119 @@
-This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
+💡 Concept Name
 
-# Getting Started
+DocEase – “Your secure AI-powered document vault and instant autofill assistant.”
 
-> **Note**: Make sure you have completed the [Set Up Your Environment](https://reactnative.dev/docs/set-up-your-environment) guide before proceeding.
+🚀 Core Idea
 
-## Step 1: Start Metro
+A mobile app that stores all your personal & professional documents securely, and lets you instantly access, copy, or auto-paste your data through voice or text commands.
 
-First, you will need to run **Metro**, the JavaScript build tool for React Native.
+For example:
 
-To start the Metro dev server, run the following command from the root of your React Native project:
+🗣️ “Paste my PAN number here”
+→ The app detects the field and pastes your PAN number.
+Or
+🗣️ “Download my Aadhar PDF”
+→ It instantly retrieves and downloads the stored document.
 
-```sh
-# Using npm
-npm start
+🧠 Core Features (MVP → Advanced)
+Phase 1: Secure Document Vault
 
-# OR using Yarn
-yarn start
-```
+Store and categorize important documents:
 
-## Step 2: Build and run your app
+Personal IDs (PAN, Aadhaar, Passport, License)
 
-With Metro running, open a new terminal window/pane from the root of your React Native project, and use one of the following commands to build and run your Android or iOS app:
+Educational certificates
 
-### Android
+Work-related docs (offer letters, payslips)
 
-```sh
-# Using npm
-npm run android
+Banking, tax, and insurance papers
 
-# OR using Yarn
-yarn android
-```
+Upload via:
 
-### iOS
+File picker
 
-For iOS, remember to install CocoaPods dependencies (this only needs to be run on first clone or after updating native deps).
+Camera scan → OCR text extraction
 
-The first time you create a new project, run the Ruby bundler to install CocoaPods itself:
+Cloud backup (encrypted) — e.g., AWS S3 + Cognito, or Firebase Storage + Auth
 
-```sh
-bundle install
-```
+Local-only option for privacy (using SecureStore / Keychain)
 
-Then, and every time you update your native dependencies, run:
+Phase 2: Smart Copy & Autofill Assistant
 
-```sh
-bundle exec pod install
-```
+🔊 Voice command detection (using speech-to-text):
 
-For more information, please visit [CocoaPods Getting Started guide](https://guides.cocoapods.org/using/getting-started.html).
+“Copy my PAN”
 
-```sh
-# Using npm
-npm run ios
+“Paste my bank account number”
 
-# OR using Yarn
-yarn ios
-```
+“Share my license PDF”
 
-If everything is set up correctly, you should see your new app running in the Android Emulator, iOS Simulator, or your connected device.
+🧩 Clipboard management — securely copies to clipboard or pastes directly into fields.
 
-This is one way to run your app — you can also build it directly from Android Studio or Xcode.
+🔍 Context recognition — when a text field is focused, the assistant suggests likely data (like Chrome Autofill).
 
-## Step 3: Modify your app
+Tech hint:
 
-Now that you have successfully run the app, let's make changes!
+Use React Native + Expo for cross-platform app.
 
-Open `App.tsx` in your text editor of choice and make some changes. When you save, your app will automatically update and reflect these changes — this is powered by [Fast Refresh](https://reactnative.dev/docs/fast-refresh).
+Integrate Voice SDKs like:
 
-When you want to forcefully reload, for example to reset the state of your app, you can perform a full reload:
+react-native-voice (speech-to-text)
 
-- **Android**: Press the <kbd>R</kbd> key twice or select **"Reload"** from the **Dev Menu**, accessed via <kbd>Ctrl</kbd> + <kbd>M</kbd> (Windows/Linux) or <kbd>Cmd ⌘</kbd> + <kbd>M</kbd> (macOS).
-- **iOS**: Press <kbd>R</kbd> in iOS Simulator.
+OpenAI’s Whisper API (for more accurate speech recognition)
 
-## Congratulations! :tada:
+Use App Service Extension (Android Accessibility Service) to detect text fields and paste automatically (requires permissions).
 
-You've successfully run and modified your React Native App. :partying_face:
+Phase 3: AI-Powered Assistant
 
-### Now what?
+AI chat inside app:
+“Find my latest insurance policy” → shows document
+“When does my passport expire?” → reads data from document metadata.
 
-- If you want to add this new React Native code to an existing application, check out the [Integration guide](https://reactnative.dev/docs/integration-with-existing-apps).
-- If you're curious to learn more about React Native, check out the [docs](https://reactnative.dev/docs/getting-started).
+Smart tagging and search (via OCR + AI).
 
-# Troubleshooting
+Auto-detect and fill government forms using AI (like autofilling PAN, name, DOB, etc.).
 
-If you're having issues getting the above steps to work, see the [Troubleshooting](https://reactnative.dev/docs/troubleshooting) page.
+🔐 Security Design
 
-# Learn More
+Since this app stores sensitive data:
 
-To learn more about React Native, take a look at the following resources:
+AES-256 local encryption for stored data.
 
-- [React Native Website](https://reactnative.dev) - learn more about React Native.
-- [Getting Started](https://reactnative.dev/docs/environment-setup) - an **overview** of React Native and how setup your environment.
-- [Learn the Basics](https://reactnative.dev/docs/getting-started) - a **guided tour** of the React Native **basics**.
-- [Blog](https://reactnative.dev/blog) - read the latest official React Native **Blog** posts.
-- [`@facebook/react-native`](https://github.com/facebook/react-native) - the Open Source; GitHub **repository** for React Native.
+Optional biometric lock (FaceID / Fingerprint).
+
+No data leaves the device unless user syncs via encrypted cloud (e.g., AWS KMS, Cognito).
+
+Document metadata only (not full files) used for AI indexing.
+
+⚙️ Tech Stack
+Layer Recommendation
+Frontend React Native (Expo), TypeScript
+Voice Recognition Whisper API / react-native-voice
+Backend Node.js / Hono / Spring Boot (secure REST APIs)
+Storage AWS S3 (encrypted) / Firebase Storage
+Auth AWS Cognito / Firebase Auth / Auth0
+Database DynamoDB / Firestore
+AI Assistant OpenAI API or Llama-based local inference
+OCR Tesseract.js or Google Vision API
+Clipboard / Accessibility Android Accessibility API, iOS Keyboard Extension (optional)
+🧩 Example Flow (User Story)
+
+User uploads PAN card → app extracts PAN number and stores metadata.
+
+When user says:
+“Paste my PAN number,”
+→ app recognizes the phrase
+→ copies the number to clipboard or pastes it directly.
+
+The user can also say:
+“Download my passport”
+→ the file is retrieved and shared instantly.
+
+🗓️ Build Roadmap
+Phase Features Time (approx.)
+
+1. Vault Setup Upload, organize, encrypt, search 2–3 weeks
+2. Voice Commands Speech-to-text, clipboard copy/paste 2 weeks
+3. OCR + Metadata Extract text & auto-tag 1–2 weeks
+4. AI Integration Chat, smart search, form autofill 3–4 weeks
+5. Cloud Sync AWS/Firebase integration 2 weeks
