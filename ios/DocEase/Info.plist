@@ -60,5 +60,18 @@
 		<string>Ionicons.ttf</string>
   		<string>MaterialCommunityIcons.ttf</string>
 	</array>
+	<!-- Google Sign-In Configuration -->
+	<key>CFBundleURLTypes</key>
+	<array>
+	<dict>
+		<key>CFBundleTypeRole</key>
+		<string>Editor</string>
+		<key>CFBundleURLSchemes</key>
+		<array>
+			<!-- 👇 Reversed Client ID -->
+			<string>com.googleusercontent.apps.387674441603-eodqat7dr90bfbkb88nsef447p46t5ov</string>
+		</array>
+	</dict>
+	</array>
 </dict>
 </plist>

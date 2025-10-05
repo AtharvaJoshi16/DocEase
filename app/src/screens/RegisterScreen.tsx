@@ -1,6 +1,16 @@
-import { Button, Card, Input, Layout, useTheme } from '@ui-kitten/components';
+import { IOS_CLIENTID } from '@env';
+import { GoogleSignin } from '@react-native-google-signin/google-signin';
+import {
+  Button,
+  Card,
+  Input,
+  Layout,
+  Spinner,
+  useTheme,
+} from '@ui-kitten/components';
 import { Dispatch, SetStateAction, useState } from 'react';
 import {
+  Alert,
   ImageProps,
   StyleSheet,
   Text,
@@ -38,10 +48,30 @@ const Eye = (
   );
 };
 
+GoogleSignin.configure({
+  webClientId: IOS_CLIENTID,
+  iosClientId: IOS_CLIENTID,
+});
+
 export const RegisterScreen = () => {
   const theme = useTheme();
   const [showPwd, setShowPwd] = useState(false);
   const [showConfirmPwd, setShowConfirmPwd] = useState(false);
+  const [googleSignInLoading, setGoogleSignInLoading] = useState(false);
+
+  const handleGoogleSignIn = async () => {
+    try {
+      setGoogleSignInLoading(true);
+      const res = await GoogleSignin.signIn();
+      const { user, idToken } = res.data!;
+      console.log(user, idToken);
+    } catch (e: any) {
+      console.log(e);
+      Alert.alert('Oops!', 'Something went wrong!');
+    } finally {
+      setGoogleSignInLoading(false);
+    }
+  };
 
   return (
     <Layout level="3" style={styles.container}>
@@ -73,19 +103,30 @@ export const RegisterScreen = () => {
       <Text style={styles.or}>OR</Text>
       <Button
         appearance="outline"
-        accessoryLeft={props => (
-          <Icon
-            {...props}
-            name="logo-google"
-            size={22}
-            color={theme['color-primary-600']}
-            style={{
-              margin: 'auto',
-            }}
-          />
-        )}
+        style={styles.googleLoginCta}
+        disabled={googleSignInLoading}
+        accessoryRight={props =>
+          googleSignInLoading ? (
+            <Spinner />
+          ) : (
+            <Icon
+              {...props}
+              name="logo-google"
+              size={22}
+              color={theme['color-primary-600']}
+              style={{
+                margin: 'auto',
+              }}
+            />
+          )
+        }
+        onPress={handleGoogleSignIn}
       >
-        <Text>SIGN IN WITH GOOGLE</Text>
+        {!googleSignInLoading ? (
+          <Text>SIGN IN WITH GOOGLE</Text>
+        ) : (
+          <Text>SIGNING IN</Text>
+        )}
       </Button>
     </Layout>
   );
@@ -126,6 +167,7 @@ const styles = StyleSheet.create({
   },
   googleLoginCta: {
     alignItems: 'center',
+    borderRadius: 30,
     justifyContent: 'center',
   },
 });
