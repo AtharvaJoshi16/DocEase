@@ -14,6 +14,6 @@ const styles = StyleSheet.create({
     fontSize: 32,
     fontFamily: 'Barlow-Bold',
     color: 'color-primary-500',
-    bottom: 50,
+    bottom: 40,
   },
 });

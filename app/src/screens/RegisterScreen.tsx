@@ -12,6 +12,7 @@ import { Dispatch, SetStateAction, useState } from 'react';
 import {
   Alert,
   ImageProps,
+  ScrollView,
   StyleSheet,
   Text,
   TouchableWithoutFeedback,
@@ -32,8 +33,12 @@ const Header = () => {
   );
 };
 
-const Footer = () => {
-  return <Button style={styles.registerCta}>Register</Button>;
+const Footer = ({ handleSubmit }: { handleSubmit: () => void }) => {
+  return (
+    <Button style={styles.registerCta} onPress={handleSubmit}>
+      Register
+    </Button>
+  );
 };
 
 const Eye = (
@@ -58,6 +63,14 @@ export const RegisterScreen = () => {
   const [showPwd, setShowPwd] = useState(false);
   const [showConfirmPwd, setShowConfirmPwd] = useState(false);
   const [googleSignInLoading, setGoogleSignInLoading] = useState(false);
+  const [form, setForm] = useState<Record<string, string>>({
+    email: '',
+    password: '',
+    confirmPassword: '',
+    firstName: '',
+    lastName: '',
+  });
+  const data = new FormData();
 
   const handleGoogleSignIn = async () => {
     try {
@@ -73,29 +86,90 @@ export const RegisterScreen = () => {
     }
   };
 
+  const handleChange = (field: string, value: any) => {
+    setForm({ ...form, [field]: value });
+  };
+
+  const handleSubmit = () => {
+    // data.append('email', form.email);
+    // data.append('password', form.password);
+    // data.append('confirmPassword', form.confirmPassword);
+    // data.append('firstName', form.firstName);
+    // data.append('lastName', form.lastName);
+  };
+
   return (
     <Layout level="3" style={styles.container}>
       <AppTitle theme={theme} />
       <Layout level="2" style={styles.form}>
-        <Card header={Header} footer={Footer}>
-          <Layout level="1" style={styles.formContent}>
-            <Input placeholder="Enter email" label="Email" />
-            <Input
-              placeholder="Choose a password"
-              label="Password"
-              id="password"
-              secureTextEntry={showPwd}
-              accessoryRight={props => Eye(props!, showPwd, setShowPwd)}
-            />
-            <Input
-              placeholder="Confirm password"
-              label="Confirm Password"
-              id="confirmPassword"
-              secureTextEntry={showConfirmPwd}
-              accessoryRight={props =>
-                Eye(props!, showConfirmPwd, setShowConfirmPwd)
-              }
-            />
+        <Card
+          header={Header}
+          footer={() => <Footer handleSubmit={handleSubmit} />}
+        >
+          <Layout level="1">
+            <ScrollView>
+              <Layout level="1" style={styles.formContent}>
+                <Input
+                  placeholder="Enter email"
+                  label="Email"
+                  onChangeText={text => handleChange('email', text)}
+                  value={form.email}
+                />
+                <Input
+                  placeholder="Enter firstname"
+                  label="Firstname"
+                  onChangeText={text => handleChange('firstName', text)}
+                  value={form.firstName}
+                />
+                <Input
+                  placeholder="Enter lastname"
+                  label="Lastname"
+                  onChangeText={text => handleChange('lastName', text)}
+                  value={form.lastName}
+                />
+                <Input
+                  placeholder="Choose a password"
+                  label="Password"
+                  id="password"
+                  secureTextEntry={showPwd}
+                  accessoryRight={props => Eye(props!, showPwd, setShowPwd)}
+                  caption={() => (
+                    <Text style={{ margin: 4, color: '#8f9bb3' }}>
+                      Should have minimum length 12 and contain atleast one
+                      uppercase,lowercase, number and special character
+                    </Text>
+                  )}
+                  onChangeText={text => handleChange('password', text)}
+                  value={form.password}
+                />
+                <Input
+                  placeholder="Confirm password"
+                  label="Confirm Password"
+                  id="confirmPassword"
+                  secureTextEntry={showConfirmPwd}
+                  accessoryRight={props =>
+                    Eye(props!, showConfirmPwd, setShowConfirmPwd)
+                  }
+                  onChangeText={text => handleChange('confirmPassword', text)}
+                  value={form.confirmPassword}
+                  caption={() => {
+                    if (form?.password !== form?.confirmPassword) {
+                      return (
+                        <Text
+                          style={{
+                            color: theme['color-danger-600'],
+                            margin: 4,
+                          }}
+                        >
+                          Passwords do not match
+                        </Text>
+                      );
+                    }
+                    return null;
+                  }}
+                />
+              </Layout>
+            </ScrollView>
           </Layout>
         </Card>
       </Layout>
