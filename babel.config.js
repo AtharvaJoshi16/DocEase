@@ -12,5 +12,6 @@ module.exports = {
         allowUndefined: true,
       },
     ],
+    '@babel/plugin-transform-export-namespace-from',
   ],
 };

@@ -14,15 +14,18 @@
     "@react-native-google-signin/google-signin": "^16.0.0",
     "@react-native/new-app-screen": "0.81.4",
     "@ui-kitten/components": "^5.3.1",
+    "axios": "^1.12.2",
     "react": "19.1.0",
     "react-native": "0.81.4",
     "react-native-dotenv": "^3.4.11",
     "react-native-safe-area-context": "^5.5.2",
     "react-native-svg": "^15.13.0",
-    "react-native-vector-icons": "^10.3.0"
+    "react-native-vector-icons": "^10.3.0",
+    "zod": "^4.1.11"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
+    "@babel/plugin-transform-export-namespace-from": "^7.27.1",
     "@babel/preset-env": "^7.25.3",
     "@babel/runtime": "^7.25.0",
     "@react-native-community/cli": "20.0.0",

@@ -1,4 +1,4 @@
-import { IOS_CLIENTID } from '@env';
+import { AUTH_SERVICE, IOS_CLIENTID } from '@env';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import {
   Button,
@@ -8,6 +8,7 @@ import {
   Spinner,
   useTheme,
 } from '@ui-kitten/components';
+import axios from 'axios';
 import { Dispatch, SetStateAction, useState } from 'react';
 import {
   Alert,
@@ -20,6 +21,7 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { AppTitle } from '../components/AppTitle';
+import { RegisterFormSchema } from '../schema/RegisterFormSchema';
 const Header = () => {
   const theme = useTheme();
   return (
@@ -33,10 +35,21 @@ const Header = () => {
   );
 };
 
-const Footer = ({ handleSubmit }: { handleSubmit: () => void }) => {
+const Footer = ({
+  handleSubmit,
+  loading,
+}: {
+  handleSubmit: () => void;
+  loading: boolean;
+}) => {
   return (
-    <Button style={styles.registerCta} onPress={handleSubmit}>
-      Register
+    <Button
+      style={styles.registerCta}
+      onPress={handleSubmit}
+      disabled={loading}
+      accessoryLeft={() => (loading ? <Spinner status="primary" /> : <></>)}
+    >
+      {loading ? null : 'Register'}
     </Button>
   );
 };
@@ -63,6 +76,8 @@ export const RegisterScreen = () => {
   const [showPwd, setShowPwd] = useState(false);
   const [showConfirmPwd, setShowConfirmPwd] = useState(false);
   const [googleSignInLoading, setGoogleSignInLoading] = useState(false);
+  const [registerLoading, setRegisterLoading] = useState(false);
+  const [errors, setErrors] = useState<any>();
   const [form, setForm] = useState<Record<string, string>>({
     email: '',
     password: '',
@@ -90,12 +105,26 @@ export const RegisterScreen = () => {
     setForm({ ...form, [field]: value });
   };
 
-  const handleSubmit = () => {
-    // data.append('email', form.email);
-    // data.append('password', form.password);
-    // data.append('confirmPassword', form.confirmPassword);
-    // data.append('firstName', form.firstName);
-    // data.append('lastName', form.lastName);
+  const handleSubmit = async () => {
+    const parsedData = RegisterFormSchema.safeParse(form);
+    setErrors(parsedData?.error?.flatten().fieldErrors);
+    data.append('email', form.email);
+    data.append('password', form.password);
+    data.append('firstName', form.firstName);
+    data.append('lastName', form.lastName);
+
+    try {
+      setRegisterLoading(true);
+      const res = await axios.post(`${AUTH_SERVICE}/register`, data);
+      console.log(res.data);
+    } catch (e: any) {
+      console.log(e);
+      if (e?.response?.status === 409) {
+        Alert.alert('Oops!', e?.response?.data?.err);
+      }
+    } finally {
+      setRegisterLoading(false);
+    }
   };
 
   return (
@@ -104,7 +133,9 @@ export const RegisterScreen = () => {
       <Layout level="2" style={styles.form}>
         <Card
           header={Header}
-          footer={() => <Footer handleSubmit={handleSubmit} />}
+          footer={() => (
+            <Footer handleSubmit={handleSubmit} loading={registerLoading} />
+          )}
         >
           <Layout level="1">
             <ScrollView>
@@ -114,6 +145,15 @@ export const RegisterScreen = () => {
                   label="Email"
                   onChangeText={text => handleChange('email', text)}
                   value={form.email}
+                  caption={() =>
+                    errors?.email?.[0] ? (
+                      <Text
+                        style={{ color: theme['color-danger-600'], margin: 4 }}
+                      >
+                        {errors?.email?.[0]}
+                      </Text>
+                    ) : null
+                  }
                 />
                 <Input
                   placeholder="Enter firstname"
@@ -133,12 +173,27 @@ export const RegisterScreen = () => {
                   id="password"
                   secureTextEntry={showPwd}
                   accessoryRight={props => Eye(props!, showPwd, setShowPwd)}
-                  caption={() => (
-                    <Text style={{ margin: 4, color: '#8f9bb3' }}>
-                      Should have minimum length 12 and contain atleast one
-                      uppercase,lowercase, number and special character
-                    </Text>
-                  )}
+                  caption={() =>
+                    !!errors?.password?.length ? (
+                      <>
+                        {errors?.password?.map((err: string) => (
+                          <Text
+                            style={{
+                              color: theme['color-danger-500'],
+                              margin: 4,
+                            }}
+                          >
+                            {err}
+                          </Text>
+                        ))}
+                      </>
+                    ) : (
+                      <Text style={{ margin: 4, color: '#8f9bb3' }}>
+                        Should have minimum length 12 and contain atleast one
+                        uppercase,lowercase, number and special character
+                      </Text>
+                    )
+                  }
                   onChangeText={text => handleChange('password', text)}
                   value={form.password}
                 />
